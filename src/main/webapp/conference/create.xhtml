@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:forgeview="http://jboss.org/forge/view"	
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="id" value="#{conferenceBean.id}"/>
+		<f:event type="preRenderView" listener="#{conferenceBean.retrieve}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Create Conference"/>
+
+	<ui:define name="header">
+		Conference
+	</ui:define>
+
+	<ui:define name="subheader">
+		<c:choose>
+			<c:when test="#{!empty conferenceBean.id}">
+				Edit existing Conference
+			</c:when>
+			<c:otherwise>
+				Create a new Conference
+			</c:otherwise>
+		</c:choose>
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:form id="create">
+			<h:messages globalOnly="true" styleClass="error"/>
+
+			<h:panelGrid columnClasses="label,component,required" columns="3">
+				<h:outputLabel for="conferenceBeanConferenceName" value="Name:"/>
+				<h:panelGroup>
+					<h:inputText id="conferenceBeanConferenceName" value="#{conferenceBean.conference.name}"/>
+					<h:message for="conferenceBeanConferenceName" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText/>
+				<h:outputLabel for="conferenceBeanConferenceConferenceDate" value="Conference Date:"/>
+				<h:panelGroup>
+					<h:inputText id="conferenceBeanConferenceConferenceDate" value="#{conferenceBean.conference.conferenceDate}">
+						<f:convertDateTime type="date"/>
+					</h:inputText>
+					<h:message for="conferenceBeanConferenceConferenceDate" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText/>
+				<h:outputLabel for="conferenceBeanConferenceSessions" value="Sessions:"/>
+				<h:panelGroup>
+					<ui:param name="_collection" value="#{conferenceBean.conference.sessions}"/>
+					<h:dataTable id="conferenceBeanConferenceSessions" styleClass="data-table" value="#{forgeview:asList(_collection)}" var="_item">
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Title"/>
+							</f:facet>
+							<h:link outcome="/session/view">
+								<f:param name="id" value="#{_item.id}"/>
+								<h:outputText id="itemTitle" value="#{_item.title}"/>
+							</h:link>
+							<f:facet name="footer">
+								<h:inputText id="sessionBeanAddTitle" value="#{sessionBean.add.title}"/>
+								<h:message for="sessionBeanAddTitle" styleClass="error"/>
+							</f:facet>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Speaker"/>
+							</f:facet>
+							<h:link outcome="/session/view">
+								<f:param name="id" value="#{_item.id}"/>
+								<h:outputText id="itemSpeaker" value="#{_item.speaker}"/>
+							</h:link>
+							<f:facet name="footer">
+								<h:selectOneMenu converter="#{speakerBean.converter}" id="sessionBeanAddSpeaker" value="#{sessionBean.add.speaker}">
+									<f:selectItem/>
+									<f:selectItems value="#{speakerBean.all}"/>
+								</h:selectOneMenu>
+								<h:message for="sessionBeanAddSpeaker" styleClass="error"/>
+							</f:facet>
+						</h:column>
+						<h:column footerClass="remove-column" headerClass="remove-column">
+							<h:commandLink action="#{_collection.remove(_item)}" styleClass="remove-button"/>
+							<f:facet name="footer">
+								<h:commandLink action="#{_collection.add(sessionBean.added)}" id="conferenceBeanConferenceSessionsAdd" styleClass="add-button">
+									<f:setPropertyActionListener target="#{sessionBean.add.conference}" value="#{conferenceBean.conference}"/>
+								</h:commandLink>
+							</f:facet>
+						</h:column>
+					</h:dataTable>
+				</h:panelGroup>
+				<h:outputText/>
+			</h:panelGrid>
+
+			<div class="buttons">
+				<h:commandLink value="Save" action="#{conferenceBean.update}" styleClass="btn btn-primary"/>
+				<c:choose>
+					<c:when test="#{!empty conferenceBean.id}">
+						<h:link value="Cancel" outcome="view" styleClass="btn btn-primary">
+							<f:param name="id" value="#{conferenceBean.id}"/>
+						</h:link>
+						<h:commandLink value="Delete" action="#{conferenceBean.delete}" styleClass="btn btn-primary"/>
+					</c:when>
+					<c:otherwise>
+						<h:link value="Cancel" outcome="search" styleClass="btn btn-primary"/>
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="page" value="#{sessionBean.page}"/>
+		<f:event type="preRenderView" listener="#{sessionBean.paginate}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Search Session entities"/>
+
+	<ui:define name="header">
+		Session
+	</ui:define>
+
+	<ui:define name="subheader">
+		Search Session entities
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:form id="search">
+			<f:validateBean disabled="true">
+				<h:panelGroup styleClass="search">
+
+					<h:panelGrid columnClasses="label,component,required" columns="3">
+						<h:outputLabel for="sessionBeanExampleTitle" value="Title:"/>
+						<h:panelGroup>
+							<h:inputText id="sessionBeanExampleTitle" value="#{sessionBean.example.title}"/>
+							<h:message for="sessionBeanExampleTitle" styleClass="error"/>
+						</h:panelGroup>
+						<h:outputText/>
+						<h:outputLabel for="sessionBeanExampleConference" value="Conference:"/>
+						<h:panelGroup>
+							<h:selectOneMenu converter="#{conferenceBean.converter}" id="sessionBeanExampleConference" value="#{sessionBean.example.conference}">
+								<f:selectItem/>
+								<f:selectItems value="#{conferenceBean.all}"/>
+							</h:selectOneMenu>
+							<h:message for="sessionBeanExampleConference" styleClass="error"/>
+						</h:panelGroup>
+						<h:outputText/>
+						<h:outputLabel for="sessionBeanExampleSpeaker" value="Speaker:"/>
+						<h:panelGroup>
+							<h:selectOneMenu converter="#{speakerBean.converter}" id="sessionBeanExampleSpeaker" value="#{sessionBean.example.speaker}">
+								<f:selectItem/>
+								<f:selectItems value="#{speakerBean.all}"/>
+							</h:selectOneMenu>
+							<h:message for="sessionBeanExampleSpeaker" styleClass="error"/>
+						</h:panelGroup>
+						<h:outputText/>
+					</h:panelGrid>
+					<h:panelGroup styleClass="buttons">
+						<h:commandLink value="Search" action="#{sessionBean.search}" styleClass="btn btn-primary"/>
+						<h:commandLink value="Create New" action="#{sessionBean.create}" styleClass="btn btn-primary"/>
+					</h:panelGroup>
+				</h:panelGroup>
+			</f:validateBean>
+			
+			<h:dataTable id="sessionBeanPageItems" styleClass="data-table" value="#{sessionBean.pageItems}" var="_item">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Title"/>
+					</f:facet>
+					<h:link outcome="/session/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemTitle" value="#{_item.title}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Conference"/>
+					</f:facet>
+					<h:link outcome="/session/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemConference" value="#{_item.conference}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Speaker"/>
+					</f:facet>
+					<h:link outcome="/session/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemSpeaker" value="#{_item.speaker}"/>
+					</h:link>
+				</h:column>
+			</h:dataTable>
+			<ui:include src="/resources/scaffold/paginator.xhtml">
+				<ui:param name="paginatorBean" value="#{sessionBean}"/>
+			</ui:include>
+		</h:form>
+			
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="page" value="#{sessionReviewBean.page}"/>
+		<f:event type="preRenderView" listener="#{sessionReviewBean.paginate}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Search Session Review entities"/>
+
+	<ui:define name="header">
+		Session Review
+	</ui:define>
+
+	<ui:define name="subheader">
+		Search Session Review entities
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:form id="search">
+			<f:validateBean disabled="true">
+				<h:panelGroup styleClass="search">
+
+					<h:panelGrid columnClasses="label,component,required" columns="3">
+						<h:outputLabel for="sessionReviewBeanExampleSession" value="Session:"/>
+						<h:panelGroup>
+							<h:selectOneMenu converter="#{sessionBean.converter}" id="sessionReviewBeanExampleSession" value="#{sessionReviewBean.example.session}">
+								<f:selectItem/>
+								<f:selectItems value="#{sessionBean.all}"/>
+							</h:selectOneMenu>
+							<h:message for="sessionReviewBeanExampleSession" styleClass="error"/>
+						</h:panelGroup>
+						<h:outputText/>
+						<h:outputLabel for="sessionReviewBeanExampleReviewerName" value="Reviewer Name:"/>
+						<h:panelGroup>
+							<h:inputText id="sessionReviewBeanExampleReviewerName" value="#{sessionReviewBean.example.reviewerName}"/>
+							<h:message for="sessionReviewBeanExampleReviewerName" styleClass="error"/>
+						</h:panelGroup>
+						<h:outputText/>
+					</h:panelGrid>
+					<h:panelGroup styleClass="buttons">
+						<h:commandLink value="Search" action="#{sessionReviewBean.search}" styleClass="btn btn-primary"/>
+						<h:commandLink value="Create New" action="#{sessionReviewBean.create}" styleClass="btn btn-primary"/>
+					</h:panelGroup>
+				</h:panelGroup>
+			</f:validateBean>
+			
+			<h:dataTable id="sessionReviewBeanPageItems" styleClass="data-table" value="#{sessionReviewBean.pageItems}" var="_item">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Session"/>
+					</f:facet>
+					<h:link outcome="/sessionReview/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemSession" value="#{_item.session}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Reviewer Name"/>
+					</f:facet>
+					<h:link outcome="/sessionReview/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemReviewerName" value="#{_item.reviewerName}"/>
+					</h:link>
+				</h:column>
+			</h:dataTable>
+			<ui:include src="/resources/scaffold/paginator.xhtml">
+				<ui:param name="paginatorBean" value="#{sessionReviewBean}"/>
+			</ui:include>
+		</h:form>
+			
+	</ui:define>
+
+</ui:composition>

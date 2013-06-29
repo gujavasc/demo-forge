@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:forgeview="http://jboss.org/forge/view"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="id" value="#{speakerBean.id}"/>
+		<f:event type="preRenderView" listener="#{speakerBean.retrieve}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="View Speaker"/>
+
+	<ui:define name="header">
+		Speaker
+	</ui:define>
+
+	<ui:define name="subheader">
+		View existing Speaker
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:panelGrid columnClasses="label,component,required" columns="3">
+			<h:outputLabel for="speakerBeanSpeakerName" value="Name:"/>
+			<h:outputText id="speakerBeanSpeakerName" value="#{speakerBean.speaker.name}"/>
+			<h:outputText/>
+			<h:outputLabel for="speakerBeanSpeakerCompany" value="Company:"/>
+			<h:outputText id="speakerBeanSpeakerCompany" value="#{speakerBean.speaker.company}"/>
+			<h:outputText/>
+			<h:outputLabel for="speakerBeanSpeakerSessions" value="Sessions:"/>
+			<h:dataTable id="speakerBeanSpeakerSessions" styleClass="data-table" value="#{forgeview:asList(speakerBean.speaker.sessions)}" var="_item">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Title"/>
+					</f:facet>
+					<h:link outcome="/session/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemTitle" value="#{_item.title}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Conference"/>
+					</f:facet>
+					<h:link outcome="/session/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemConference" value="#{_item.conference}"/>
+					</h:link>
+				</h:column>
+			</h:dataTable>
+			<h:outputText/>
+		</h:panelGrid>
+
+		<div class="buttons">
+			<h:link value="View All" outcome="search" styleClass="btn btn-primary"/> 
+			<h:link value="Edit" outcome="create" includeViewParams="true" styleClass="btn btn-primary"/>
+			<h:link value="Create New" outcome="create" styleClass="btn btn-primary"/>
+		</div>
+	</ui:define>
+
+</ui:composition>
